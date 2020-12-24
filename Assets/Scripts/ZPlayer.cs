@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace Zetalib
 {
+    public enum ZPlayerMode
+    {
+        LOCAL_ROTATE,
+        LOCAL_STRAFE,
+        WORLD
+    }
+
     [RequireComponent(typeof(CharacterController))]
     public class ZPlayer : MonoBehaviour
     {
@@ -12,13 +19,13 @@ namespace Zetalib
         public float deceleration = 40.0f;
         public Vector3 gravity = new Vector3(0, -30, 0);
         public float jumpSpeed = 13.0f;
-        [Range(0,1.0f)]
+        [Range(0, 1.0f)]
         public float turnSpeed = 0.0f;
         public Spawner gun;
         public bool cursorLock = false;
         public Vector3 speed;
         public bool ignoreInput = false;
-        public bool localMode = false;
+        public ZPlayerMode mode;
         public GameObject globalAxisRef;
         private GameObject globalAlignObj;
 
@@ -121,23 +128,40 @@ namespace Zetalib
             //cc.Move(speed * Time.deltaTime); // speed as local speed.
             if (dir.magnitude != 0)
             {
-                if (localMode && planar.magnitude > 0.5f)
+                if (mode == ZPlayerMode.LOCAL_ROTATE)
                 {
-                    transform.forward = Vector3.Slerp(transform.forward, transform.TransformVector(new Vector3(speed.x, 0, Mathf.Abs(speed.z))), Mathf.Clamp01(turnSpeed)*0.1f); // global forward set to local speed.
+                    transform.forward = Vector3.Slerp(transform.forward, transform.TransformVector(new Vector3(speed.x, 0, Mathf.Abs(speed.z))), Mathf.Clamp01(turnSpeed) * 0.1f); // global forward set to local speed.
+                }
+                if (mode == ZPlayerMode.LOCAL_STRAFE)
+                {
+
+                }
+                else if (mode == ZPlayerMode.WORLD)
+                {
+                    transform.forward = Vector3.Slerp(transform.forward, globalAlignObj.transform.TransformVector(new Vector3(speed.x, 0, speed.z)), Mathf.Clamp01(turnSpeed)); // global forward set to global speed.
                 }
                 else
                 {
-                    transform.forward = Vector3.Slerp(transform.forward, globalAlignObj.transform.TransformVector( new Vector3(speed.x, 0, speed.z)), Mathf.Clamp01(turnSpeed)); // global forward set to global speed.
+
                 }
+
             }
 
-            if (localMode)
+            if (mode == ZPlayerMode.LOCAL_ROTATE)
             {
                 cc.Move(transform.TransformVector(Vector3.Scale(speed, new Vector3(0, 1, 1)) * Time.deltaTime)); // speed as local speed
             }
+            if (mode == ZPlayerMode.LOCAL_STRAFE)
+            {
+                cc.Move(transform.TransformVector(Vector3.Scale(speed, new Vector3(1, 1, 1)) * Time.deltaTime)); // speed as local speed
+            }
+            else if (mode == ZPlayerMode.WORLD)
+            {
+                cc.Move(globalAlignObj.transform.TransformVector(speed) * Time.deltaTime); // speed as global speed.
+            }
             else
             {
-                cc.Move(globalAlignObj.transform.TransformVector( speed) * Time.deltaTime); // speed as global speed.
+
             }
 
             if (cc.isGrounded)

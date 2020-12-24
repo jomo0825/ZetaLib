@@ -116,5 +116,20 @@ namespace Zetalib
         {
             Destroy(target);
         }
+
+        public static void Create(GameObject prefab, Vector3 position, float angleX, float angleY, float angleZ)
+        {
+            Instantiate(prefab, position, Quaternion.Euler(angleX, angleY, angleZ));
+        }
+
+        public static void Create(GameObject prefab, Vector3 position, Quaternion rotation)
+        {
+            Instantiate(prefab, position, rotation);
+        }
+
+        public void SetPosition(float x, float y, float z)
+        {
+            transform.position = new Vector3(x, y, z);
+        }
     }
 }
