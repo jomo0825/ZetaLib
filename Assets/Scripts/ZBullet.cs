@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Zetalib
 {
     [RequireComponent(typeof(MeshFilter))]
-    [RequireComponent(typeof(ZetaObj))]
+    [RequireComponent(typeof(ZObj))]
     public class ZBullet : MonoBehaviour
     {
         public Vector3 localSpeed;
@@ -19,7 +19,7 @@ namespace Zetalib
         //private Collider col;
         //private Mesh mesh;
         //private float colRadius = 0;
-        private ZetaObj zobj;
+        private ZObj zobj;
         private Vector3 lastPos;
         private Vector3 lastPos2;
 
@@ -29,7 +29,7 @@ namespace Zetalib
             //mesh = GetComponent<MeshFilter>().mesh;
             //Vector3 scaledBounds = Vector3.Scale(mesh.bounds.size, transform.localScale);
             //colRadius = scaledBounds.magnitude / 2.0f;
-            zobj = GetComponent<ZetaObj>();
+            zobj = GetComponent<ZObj>();
             if (autoDestroyTime != 0)
             {
                 Destroy(gameObject, autoDestroyTime);
@@ -59,11 +59,11 @@ namespace Zetalib
             int hitNum = 0;
             Vector3 speed = transform.TransformDirection(localSpeed);
 
-            if (zobj.shape == ZetaObjShape.Sphere)
+            if (zobj.shape == ZObjShape.Sphere)
             {
                 hitNum = Physics.SphereCastNonAlloc(lastPos2, zobj.colRadius, speed.normalized, hits, speed.magnitude * Time.deltaTime);
             }
-            else if (zobj.shape == ZetaObjShape.Box)
+            else if (zobj.shape == ZObjShape.Box)
             {
                 hitNum = Physics.BoxCastNonAlloc(lastPos2, zobj.scaledBounds/2.0f, speed.normalized, hits, transform.rotation,speed.magnitude * Time.deltaTime);
             }

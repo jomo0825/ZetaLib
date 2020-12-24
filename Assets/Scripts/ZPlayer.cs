@@ -19,7 +19,7 @@ namespace Zetalib
         public Vector3 speed;
         public bool ignoreInput = false;
         public bool localMode = false;
-        public GameObject globalAxisReferenceObj;
+        public GameObject globalAxisRef;
         private GameObject globalAlignObj;
 
         private CharacterController cc;
@@ -49,9 +49,9 @@ namespace Zetalib
                 Cursor.lockState = CursorLockMode.None;
             }
 
-            if (globalAxisReferenceObj != null)
+            if (globalAxisRef != null)
             {
-                globalAlignObj.transform.forward = Vector3.ProjectOnPlane(globalAxisReferenceObj.transform.forward, Vector3.up);
+                globalAlignObj.transform.forward = Vector3.ProjectOnPlane(globalAxisRef.transform.forward, Vector3.up);
             }
             else
             {

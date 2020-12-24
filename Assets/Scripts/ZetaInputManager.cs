@@ -13,7 +13,7 @@ namespace Zetalib
 
     public class ZetaInputManager : MonoBehaviour
     {
-        public ZetaEvent OnFire1;
+        public ZEvent OnFire1;
 
         // Start is called before the first frame update
         void Start()

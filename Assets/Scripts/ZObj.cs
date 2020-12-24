@@ -5,30 +5,30 @@ using UnityEngine.Events;
 
 namespace Zetalib
 {
-    public enum ZetaObjShape
+    public enum ZObjShape
     {
         Sphere,
         Box
     }
 
     [System.Serializable]
-    public class ZetaEventGameObject : UnityEvent<GameObject>
+    public class ZEventGameObject : UnityEvent<GameObject>
     {
 
     }
 
     [System.Serializable]
-    public class ZetaEvent : UnityEvent
+    public class ZEvent : UnityEvent
     {
 
     }
 
-    public class ZetaObj : MonoBehaviour
+    public class ZObj : MonoBehaviour
     {
-        public ZetaObjShape shape;
-        public ZetaEventGameObject OverlapStart;
-        public ZetaEventGameObject IsOverlapping;
-        public ZetaEventGameObject OverlapEnd;
+        public ZObjShape shape;
+        public ZEventGameObject OverlapStart;
+        public ZEventGameObject IsOverlapping;
+        public ZEventGameObject OverlapEnd;
 
         private Collider col;
         private Mesh mesh;
@@ -55,7 +55,7 @@ namespace Zetalib
             // Sphere Overlap Test
             RaycastHit[] hits = new RaycastHit[64];
             int hitNum = 0;
-            if (shape == ZetaObjShape.Sphere)
+            if (shape == ZObjShape.Sphere)
             {
                 hitNum = Physics.SphereCastNonAlloc(transform.position, colRadius, transform.forward, hits, 0);
             }
