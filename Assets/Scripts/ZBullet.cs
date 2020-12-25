@@ -9,7 +9,7 @@ namespace Zetalib
     [RequireComponent(typeof(ZObj))]
     public class ZBullet : MonoBehaviour
     {
-        public Vector3 localSpeed;
+        public Vector3 localSpeed = new Vector3(0, 0, 1);
         public Vector3 acceleration;
         public Vector3 gravity;
         public bool bounceOffSolid;
@@ -22,6 +22,8 @@ namespace Zetalib
         private ZObj zobj;
         private Vector3 lastPos;
         private Vector3 lastPos2;
+        private Vector3 bulletWorldSpeed;
+        private bool lastSetAngle;
 
         // Start is called before the first frame update
         void Start()
@@ -34,20 +36,42 @@ namespace Zetalib
             {
                 Destroy(gameObject, autoDestroyTime);
             }
+            if (localSpeed == Vector3.zero)
+            {
+                localSpeed = Vector3.forward;
+            }
+            bulletWorldSpeed = transform.TransformVector(localSpeed);
+            lastSetAngle = setAngle;
         }
 
         // Update is called once per frame
         void Update()
         {
+            // Detecte SetAngle change
+            if (setAngle != lastSetAngle && setAngle == false)
+            {
+                bulletWorldSpeed = transform.TransformVector(localSpeed);
+            }
+
             // Movement
-            transform.Translate(localSpeed * Time.deltaTime, Space.Self);
+            if (setAngle)
+            {
+                bulletWorldSpeed = transform.TransformVector(localSpeed);
+            }
+            else
+            {
+
+            }
+            transform.Translate(bulletWorldSpeed * Time.deltaTime, Space.World);
 
             // Record Last Position
             lastPos2 = lastPos;
             lastPos = transform.position;
+            lastSetAngle = setAngle;
         }
 
-        public void OnOverlapStart(object param) {
+        public void OnOverlapStart(object param)
+        {
             if (!enabled)
             {
                 return;
@@ -57,15 +81,16 @@ namespace Zetalib
             Vector3 dir = (target.transform.position - lastPos).normalized;
             RaycastHit[] hits = new RaycastHit[64];
             int hitNum = 0;
-            Vector3 speed = transform.TransformDirection(localSpeed);
+            //Vector3 bulletWorldSpeed = transform.TransformDirection(localSpeed);
 
             if (zobj.shape == ZObjShape.Sphere)
             {
-                hitNum = Physics.SphereCastNonAlloc(lastPos2, zobj.colRadius, speed.normalized, hits, speed.magnitude * Time.deltaTime);
+                //hitNum = Physics.SphereCastNonAlloc(lastPos2, zobj.colRadius, bulletWorldSpeed.normalized, hits, bulletWorldSpeed.magnitude * Time.deltaTime + 0.1f);
+                hitNum = Physics.SphereCastNonAlloc(lastPos2, zobj.colRadius, bulletWorldSpeed.normalized, hits, (transform.position - lastPos2).magnitude);
             }
             else if (zobj.shape == ZObjShape.Box)
             {
-                hitNum = Physics.BoxCastNonAlloc(lastPos2, zobj.scaledBounds/2.0f, speed.normalized, hits, transform.rotation,speed.magnitude * Time.deltaTime);
+                hitNum = Physics.BoxCastNonAlloc(lastPos2, zobj.scaledBounds / 2.0f, bulletWorldSpeed.normalized, hits, transform.rotation, (transform.position - lastPos2).magnitude);
             }
 
             if (hitNum > 0)
@@ -80,12 +105,13 @@ namespace Zetalib
                             //print(hits[i].transform.name);
                             print("impact point: " + hits[i].point);
                             print("normal: " + hits[i].normal);
-                            Vector3 targetWorldSpeed = Vector3.Reflect(speed, hits[i].normal);
+                            Vector3 targetWorldSpeed = Vector3.Reflect(bulletWorldSpeed, hits[i].normal);
                             if (setAngle)
                             {
-                                transform.rotation = Quaternion.FromToRotation(speed, targetWorldSpeed) * transform.rotation;
+                                transform.rotation = Quaternion.FromToRotation(bulletWorldSpeed, targetWorldSpeed) * transform.rotation;
                             }
-                            localSpeed = transform.InverseTransformDirection(targetWorldSpeed);
+                            bulletWorldSpeed = targetWorldSpeed;
+                            localSpeed = transform.InverseTransformDirection(bulletWorldSpeed);
                             transform.position = lastPos; //Roll back to last position
                         }
                     }

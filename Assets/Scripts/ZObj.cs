@@ -43,13 +43,15 @@ namespace Zetalib
         {
             UpdateSize();
             Gizmos.color = Color.red;
+            Gizmos.matrix = transform.localToWorldMatrix;
+
             if (shape == ZObjShape.Sphere)
             {
-                Gizmos.DrawWireSphere(transform.position, colRadius);
+                Gizmos.DrawWireSphere(Vector3.zero, Mathf.Max(mesh.bounds.size.x, mesh.bounds.size.y, mesh.bounds.size.z));
             }
             else if (shape == ZObjShape.Box)
             {
-                Gizmos.DrawWireCube(transform.position, scaledBounds);
+                Gizmos.DrawWireCube (Vector3.zero, mesh.bounds.size);
             }
         }
 
@@ -76,7 +78,10 @@ namespace Zetalib
 
         private void UpdateSize()
         {
-            mesh = GetComponent<MeshFilter>().mesh;
+            if (mesh == null)   
+            {
+                mesh = GetComponent<MeshFilter>().sharedMesh;
+            }
             scaledBounds = Vector3.Scale(mesh.bounds.size, transform.localScale);
             colRadius = Mathf.Max(scaledBounds.x, scaledBounds.y, scaledBounds.z) / 2.0f;
         }

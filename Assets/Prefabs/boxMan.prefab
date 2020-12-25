@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45002663a4b47546b10c28f668a2fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localSpeed: {x: 0, y: -30, z: 0}
+  localSpeed: {x: 0, y: -10, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   gravity: {x: 0, y: 0, z: 0}
   bounceOffSolid: 1
@@ -169,6 +169,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"nest":{"source":"Embed","macro":null,"embed":{"variables":{"collection":{"$content":[],"$version":"A"},"$version":"A"},"controlInputDefinitions":[],"controlOutputDefinitions":[],"valueInputDefinitions":[],"valueOutputDefinitions":[],"title":null,"summary":null,"pan":{"x":457.9365,"y":-23.25422},"zoom":1.0,"elements":[{"coroutine":false,"defaultValues":{},"position":{"x":-204.0,"y":-144.0},"guid":"efa0bc69-5195-4df9-abce-8e51af5f5d04","$version":"A","$type":"Bolt.Start"},{"coroutine":false,"defaultValues":{},"position":{"x":-204.0,"y":60.0},"guid":"6b0fd7d1-0047-4484-b6b2-8b92b2f3eccd","$version":"A","$type":"Bolt.Update"},{"member":{"name":"OverlapStart","parameterTypes":null,"targetType":"Zetalib.ZetaObj","targetTypeName":"Zetalib.ZetaObj","$version":"A"},"defaultValues":{"target":null},"position":{"x":13.0,"y":-19.0},"guid":"12e5798f-171c-423c-a4e0-15e6ddec5279","$version":"A","$type":"Bolt.GetMember","$id":"14"},{"Type":"UnityEngine.Events.UnityEvent`1[[UnityEngine.GameObject,
-      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]","coroutine":false,"defaultValues":{},"position":{"x":220.0,"y":-3.0},"guid":"54463bd6-33e7-49c0-a4af-3e72cca4f7bc","$version":"A","$type":"JFruit.Bolt.OnUnityEvent","$id":"17"},{"chainable":false,"member":{"name":"Destroy","parameterTypes":["UnityEngine.Object"],"targetType":"UnityEngine.GameObject","targetTypeName":"UnityEngine.GameObject","$version":"A"},"defaultValues":{"%obj":null},"position":{"x":421.0,"y":-3.0},"guid":"6ed3dc1a-f8e7-4f12-b6f0-60a86cffc87f","$version":"A","$type":"Bolt.InvokeMember","$id":"19"},{"sourceUnit":{"$ref":"17"},"sourceKey":"trigger","destinationUnit":{"$ref":"19"},"destinationKey":"enter","guid":"bce99096-b854-4c48-aa49-aa32ad078595","$type":"Bolt.ControlConnection"},{"sourceUnit":{"$ref":"14"},"sourceKey":"value","destinationUnit":{"$ref":"17"},"destinationKey":"event","guid":"dca838a4-abcb-4532-83e6-809c9bb27325","$type":"Bolt.ValueConnection"},{"sourceUnit":{"$ref":"17"},"sourceKey":"arg0","destinationUnit":{"$ref":"19"},"destinationKey":"%obj","guid":"ba008529-151f-4803-b5ea-9d3c9e6e05b2","$type":"Bolt.ValueConnection"}],"$version":"A"}}}'
+    _json: '{"nest":{"source":"Embed","macro":null,"embed":{"variables":{"collection":{"$content":[],"$version":"A"},"$version":"A"},"controlInputDefinitions":[],"controlOutputDefinitions":[],"valueInputDefinitions":[],"valueOutputDefinitions":[],"title":null,"summary":null,"pan":{"x":457.9365,"y":-23.25422},"zoom":1.0,"elements":[{"coroutine":false,"defaultValues":{},"position":{"x":-204.0,"y":-144.0},"guid":"efa0bc69-5195-4df9-abce-8e51af5f5d04","$version":"A","$type":"Bolt.Start"},{"coroutine":false,"defaultValues":{},"position":{"x":-204.0,"y":60.0},"guid":"6b0fd7d1-0047-4484-b6b2-8b92b2f3eccd","$version":"A","$type":"Bolt.Update"}],"$version":"A"}}}'
     _objectReferences: []
