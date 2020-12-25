@@ -39,12 +39,46 @@ namespace Zetalib
         private List<GameObject> overlapObjs = new List<GameObject>();
         private List<GameObject> lastOverlapObjs = new List<GameObject>();
 
+        void OnDrawGizmos()
+        {
+            UpdateSize();
+            Gizmos.color = Color.red;
+            if (shape == ZObjShape.Sphere)
+            {
+                Gizmos.DrawWireSphere(transform.position, colRadius);
+            }
+            else if (shape == ZObjShape.Box)
+            {
+                Gizmos.DrawWireCube(transform.position, scaledBounds);
+            }
+        }
+
+        private void Reset()
+        {
+
+        }
+
+        void OnEnable()
+        {
+            ZSys.inst.RegisterZObj(this);
+        }
+
+        void OnDestroy()
+        {
+            ZSys.inst.UnregisterZObj(this);
+        }
+
         // Start is called before the first frame update
         void Start()
         {
+            UpdateSize();
+        }
+
+        private void UpdateSize()
+        {
             mesh = GetComponent<MeshFilter>().mesh;
             scaledBounds = Vector3.Scale(mesh.bounds.size, transform.localScale);
-            colRadius = scaledBounds.magnitude / 2.0f;
+            colRadius = Mathf.Max(scaledBounds.x, scaledBounds.y, scaledBounds.z) / 2.0f;
         }
 
         // Update is called once per frame
@@ -61,7 +95,7 @@ namespace Zetalib
             }
             else if (true)
             {
-                hitNum = Physics.BoxCastNonAlloc(transform.position, scaledBounds/2.0f, transform.forward, hits, transform.rotation, 0);
+                hitNum = Physics.BoxCastNonAlloc(transform.position, scaledBounds / 2.0f, transform.forward, hits, transform.rotation, 0);
             }
 
             if (hitNum > 0)
@@ -79,7 +113,7 @@ namespace Zetalib
                         {
                             //SendMessage OverlapStart here.
                             print(name + " starts overlaping: " + hits[i].transform.name);
-                            BroadcastMessage("OnOverlapStart",(object)hits[i].transform.gameObject,SendMessageOptions.DontRequireReceiver);
+                            BroadcastMessage("OnOverlapStart", (object)hits[i].transform.gameObject, SendMessageOptions.DontRequireReceiver);
                             OverlapStart.Invoke(hits[i].transform.gameObject);
                         }
                     }

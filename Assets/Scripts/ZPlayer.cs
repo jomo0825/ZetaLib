@@ -38,7 +38,8 @@ namespace Zetalib
         void Start()
         {
             cc = GetComponent<CharacterController>();
-            globalAlignObj = new GameObject();
+            globalAlignObj = new GameObject("GlobalAlignMent");
+            globalAlignObj.transform.parent = transform;
             //rig = transform.Find("rig").gameObject;
         }
 
@@ -223,10 +224,10 @@ namespace Zetalib
         //    }
         //}
 
-        public void Stop()
-        {
-            speed = Vector3.zero;
-        }
+        //public void Stop()
+        //{
+        //    speed = Vector3.zero;
+        //}
     }
 }
 

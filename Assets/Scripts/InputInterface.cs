@@ -23,36 +23,39 @@ namespace Zetalib
     public enum ZetaAxis
     {
         Horizontal,
-        Vertical
+        Vertical,
+        MouseX,
+        MouseY
     }
 
-    public abstract class InputInterface<T> : MonoBehaviour  where T : InputInterface<T> 
+    public interface InputInterface  
     {
-        private static InputInterface<T> _inst;
-        public static InputInterface<T> inst
-        {
-            get
-            {
-                if (_inst == null)
-                {
-                    GameObject go = new GameObject(typeof(T).Name);
-                    _inst = go.AddComponent<T>();
-                }
-                return _inst;
-            }
-        }
+        //private static InputInterface<T> _inst;
+        //public static InputInterface<T> inst
+        //{
+        //    get
+        //    {
+        //        if (_inst == null)
+        //        {
+        //            GameObject go = new GameObject(typeof(T).Name);
+        //            _inst = go.AddComponent<T>();
+        //        }
+        //        return _inst;
+        //    }
+        //}
+        //
+        //protected void Awake()
+        //{
+        //    if (_inst != null)
+        //    {
+        //        Destroy(this);
+        //    }
+        //    _inst = this;
+        //}
 
-        protected void Awake()
-        {
-            if (_inst != null)
-            {
-                Destroy(this);
-            }
-            _inst = this;
-        }
-
-        public abstract bool CheckKeyDown(ZetaKey key);
-        public abstract bool CheckKey(ZetaKey key);
-        public abstract float CheckAxis(ZetaAxis axis);
+        bool CheckKeyDown(ZetaKey key);
+        bool CheckKey(ZetaKey key);
+        float CheckAxis(ZetaAxis axis);
+        void Init();
     }
 }
