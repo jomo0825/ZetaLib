@@ -22,6 +22,8 @@ namespace Zetalib
         private ZObj zobj;
         private Vector3 lastPos;
         private Vector3 lastPos2;
+        private Quaternion lastRotation;
+        [SerializeField]
         private Vector3 bulletWorldSpeed;
         private bool lastSetAngle;
 
@@ -45,7 +47,7 @@ namespace Zetalib
         }
 
         // Update is called once per frame
-        void Update()
+        void FixedUpdate()
         {
             // Detecte SetAngle change
             if (setAngle != lastSetAngle && setAngle == false)
@@ -62,12 +64,24 @@ namespace Zetalib
             {
 
             }
-            transform.Translate(bulletWorldSpeed * Time.deltaTime, Space.World);
+            transform.Translate(bulletWorldSpeed * Time.fixedDeltaTime, Space.World);
 
             // Record Last Position
-            lastPos2 = lastPos;
-            lastPos = transform.position;
-            lastSetAngle = setAngle;
+
+            if (CheckBounce())
+            {
+                lastPos = transform.position;
+                lastPos2 = transform.position;
+                lastRotation = transform.rotation;
+                lastSetAngle = setAngle;
+            }
+            else
+            {
+                lastPos2 = lastPos;
+                lastPos = transform.position;
+                lastRotation = transform.rotation;
+                lastSetAngle = setAngle;
+            }
         }
 
         public void OnOverlapStart(object param)
@@ -76,49 +90,50 @@ namespace Zetalib
             {
                 return;
             }
+        }
 
-            GameObject target = param as GameObject;
-            Vector3 dir = (target.transform.position - lastPos).normalized;
+        private bool CheckBounce() {
+
             RaycastHit[] hits = new RaycastHit[64];
             int hitNum = 0;
             //Vector3 bulletWorldSpeed = transform.TransformDirection(localSpeed);
 
             if (zobj.shape == ZObjShape.Sphere)
             {
-                //hitNum = Physics.SphereCastNonAlloc(lastPos2, zobj.colRadius, bulletWorldSpeed.normalized, hits, bulletWorldSpeed.magnitude * Time.deltaTime + 0.1f);
-                hitNum = Physics.SphereCastNonAlloc(lastPos2, zobj.colRadius, bulletWorldSpeed.normalized, hits, (transform.position - lastPos2).magnitude);
+                //hitNum = Physics.SphereCastNonAlloc(lastPos2, zobj.colRadius, bulletWorldSpeed.normalized, hits, bulletWorldSpeed.magnitude * Time.fixedDeltaTime + 0.1f);
+                hitNum = Physics.SphereCastNonAlloc(transform.position -bulletWorldSpeed * 0.5f * Time.fixedDeltaTime , zobj.colRadius, bulletWorldSpeed.normalized, hits, 1.5f * bulletWorldSpeed.magnitude * Time.fixedDeltaTime);
             }
             else if (zobj.shape == ZObjShape.Box)
             {
-                hitNum = Physics.BoxCastNonAlloc(lastPos2, zobj.scaledBounds / 2.0f, bulletWorldSpeed.normalized, hits, transform.rotation, (transform.position - lastPos2).magnitude);
+                hitNum = Physics.BoxCastNonAlloc(transform.position - bulletWorldSpeed * 0.5f * Time.fixedDeltaTime , zobj.scaledBounds / 2.0f, bulletWorldSpeed.normalized, hits, lastRotation, 1.5f * bulletWorldSpeed.magnitude * Time.fixedDeltaTime);
             }
 
             if (hitNum > 0)
             {
                 for (int i = 0; i < hitNum; i++)
                 {
-                    if (hits[i].transform == target.transform) // Make sure we are dealing with the target GameObject
+                    //if (hits[i].transform == target.transform) // Make sure we are dealing with the target GameObject
+                    //{
+                    Solid solid = hits[i].transform.GetComponent<Solid>();
+                    if (solid != null && solid.enabled && bounceOffSolid)
                     {
-                        Solid solid = hits[i].transform.GetComponent<Solid>();
-                        if (solid != null && solid.enabled && bounceOffSolid)
+                        //print(hits[i].transform.name);
+                        print("impact point: " + hits[i].point);
+                        print("normal: " + hits[i].normal);
+                        Vector3 targetWorldSpeed = Vector3.Reflect(bulletWorldSpeed, hits[i].normal);
+                        if (setAngle)
                         {
-                            //print(hits[i].transform.name);
-                            print("impact point: " + hits[i].point);
-                            print("normal: " + hits[i].normal);
-                            Vector3 targetWorldSpeed = Vector3.Reflect(bulletWorldSpeed, hits[i].normal);
-                            if (setAngle)
-                            {
-                                transform.rotation = Quaternion.FromToRotation(bulletWorldSpeed, targetWorldSpeed) * transform.rotation;
-                            }
-                            bulletWorldSpeed = targetWorldSpeed;
-                            localSpeed = transform.InverseTransformDirection(bulletWorldSpeed);
-                            transform.position = lastPos; //Roll back to last position
+                            transform.rotation = Quaternion.FromToRotation(bulletWorldSpeed, targetWorldSpeed) * transform.rotation;
                         }
+                        bulletWorldSpeed = targetWorldSpeed;
+                        localSpeed = transform.InverseTransformDirection(bulletWorldSpeed);
+                        //transform.position = lastPos; //Roll back to last position
+                        return true;
                     }
-
+                    //}
                 }
             }
-
+            return false;
         }
 
     }

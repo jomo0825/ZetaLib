@@ -47,7 +47,7 @@ namespace Zetalib
 
             if (shape == ZObjShape.Sphere)
             {
-                Gizmos.DrawWireSphere(Vector3.zero, Mathf.Max(mesh.bounds.size.x, mesh.bounds.size.y, mesh.bounds.size.z));
+                Gizmos.DrawWireSphere(Vector3.zero, Mathf.Max(mesh.bounds.size.x, mesh.bounds.size.y, mesh.bounds.size.z)/2.0f);
             }
             else if (shape == ZObjShape.Box)
             {
